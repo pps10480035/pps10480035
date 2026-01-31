@@ -1,0 +1,54 @@
+Práctica 2: Implementación de WAF (ModSecurity) con Docker
+
+Esta etapa del proyecto se centra en la seguridad activa mediante la implementación de un Firewall de Aplicaciones Web (WAF). El objetivo es supervisar y filtrar el tráfico HTTP para proteger la aplicación contra ataques comunes como Inyección SQL o XSS.
+Evolución de la Imagen (v2)
+
+La versión v2 hereda toda la configuración de "Hardening" de la versión anterior (SSL, HSTS, CSP, ocultación de firmas) e integra las siguientes novedades:
+
+    Módulo ModSecurity: Instalación y activación del motor mod_security2.so.
+
+    Configuración del WAF: Implementación de un archivo modsecurity.conf con el motor de reglas en modo activo (SecRuleEngine On).
+
+    Reglas de Bloqueo: Configuración de reglas manuales para la detección de patrones maliciosos.
+
+    Entorno de Pruebas: Inclusión de un script post.php para verificar la respuesta del firewall ante peticiones POST.
+
+Estructura de Archivos
+
+    modsecurity.conf: Configuración del motor de seguridad y reglas de filtrado.
+
+    post.php: Formulario PHP para testear la interceptación de datos.
+
+    Dockerfile: Actualizado para instalar librerías de seguridad y orquestar los nuevos archivos.
+
+Instalación y Configuración
+
+    Activación del Motor: Se ha configurado SecRuleEngine On para asegurar que el WAF no solo detecte, sino que bloquee las peticiones sospechosas devolviendo un código de estado 403 Forbidden.
+
+    Despliegue de la v2:
+    Bash
+
+    # Construcción de la imagen incremental
+    sudo docker build -t apache-harden-ssl:v2 .
+
+    # Etiquetado para repositorio
+    sudo docker tag apache-harden-ssl:v2 educiber/practica-hardening:v2
+
+    # Ejecución con mapeo de puertos
+    sudo docker run -d -p 8080:80 -p 8081:443 --name servidor_hardening apache-harden-ssl:v2
+
+Verificación de Seguridad (Proof of Concept)
+
+Para comprobar el correcto funcionamiento del WAF, se debe realizar una prueba de inyección de caracteres:
+
+    Acceder a http://localhost:8080/post.php.
+
+    Introducir una cadena prohibida (ej: script) en el formulario.
+
+    El servidor debe denegar la petición automáticamente:
+
+        Resultado esperado: HTTP/1.1 403 Forbidden.
+
+Repositorio Docker Hub
+
+La imagen está disponible y actualizada en: educiber/practica-hardening:v2

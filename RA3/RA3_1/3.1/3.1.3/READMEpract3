@@ -1,0 +1,48 @@
+Práctica 3: Implementación de Reglas OWASP (CRS) en ModSecurity
+
+En esta práctica se ha evolucionado el WAF básico de la versión anterior hacia una solución de nivel profesional utilizando el OWASP Core Rule Set (CRS). Este conjunto de reglas proporciona protección genérica contra las vulnerabilidades más críticas de la web (Top 10 OWASP).
+Mejoras de la Imagen (v3)
+
+La versión v3 consolida la seguridad de las fases previas e integra:
+
+    Integración de OWASP CRS: Se ha descargado y configurado el repositorio oficial de coreruleset.
+
+    Carga Dinámica de Reglas: El servidor Apache carga ahora cientos de patrones de ataque mediante la inclusión de rules/*.conf.
+
+    Protección Multipropósito: Capacidad de detectar y bloquear:
+
+        Command Injection (Inyección de comandos del sistema).
+
+        Path Traversal (Navegación no autorizada por directorios).
+
+        SQL Injection y XSS (Inyecciones de código y scripts).
+
+Verificación de Bloqueos (Proof of Concept)
+
+Se han realizado pruebas de ataque simuladas mediante curl, obteniendo un código de estado 403 Forbidden en todos los casos maliciosos:
+
+    Intento de Inyección de Comandos:
+
+        Comando: curl -I "http://localhost:8080/index.html?exec=/bin/bash"
+
+        Resultado: HTTP/1.1 403 Forbidden ✅
+
+    Intento de Salto de Directorio (Path Traversal):
+
+        Comando: curl -I "http://localhost:8080/index.html?exec=/../../"
+
+        Resultado: HTTP/1.1 403 Forbidden ✅
+
+Persistencia Incremental
+
+La imagen mantiene activas todas las directivas de seguridad anteriores:
+
+    Certificados SSL/TLS.
+
+    Cabeceras de seguridad (HSTS, CSP, X-Frame-Options).
+
+    Ocultación de firmas del servidor (ServerTokens ProductOnly).
+
+Repositorio Docker Hub
+
+Imagen actualizada disponible en: educiber/practica-hardening:v3

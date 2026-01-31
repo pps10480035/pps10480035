@@ -1,0 +1,38 @@
+Práctica 5: Despliegue de Servidor Nginx Seguro con ModSecurity y PHP-FPM
+
+Este repositorio contiene la configuración de un servidor web Nginx altamente asegurado, desplegado mediante contenedores Docker. La solución integra un cortafuegos de aplicaciones web (WAF) y un motor de procesamiento PHP.
+🛠️ Componentes del Stack
+
+    Imagen Base: owasp/modsecurity-crs:nginx (Nginx + ModSecurity + Reglas OWASP).
+
+    Procesador PHP: PHP-FPM 8.2 configurado sobre el puerto TCP 9000.
+
+    Seguridad WAF: ModSecurity v3 con el Core Rule Set (CRS) de OWASP activo en modo bloqueo (On).
+
+    Cifrado: Certificados SSL/TLS (autofirmados) con redirección forzosa desde HTTP.
+
+🔒 Medidas de Seguridad Implementadas
+
+    Hardening de Cabeceras:
+
+        Strict-Transport-Security (HSTS): Obliga al uso de HTTPS durante 1 año.
+
+        Content-Security-Policy (CSP): Restringe la ejecución de scripts a fuentes del propio dominio ('self').
+
+    Control de Acceso: Directorio /protegido restringido mediante autenticación básica (Usuario: edu / Pass: edu123).
+
+    Protección contra Inyecciones: Bloqueo activo de ataques XSS, SQLi y Command Injection mediante el motor ModSecurity.
+
+🚀 Despliegue Rapido
+
+Para poner en marcha el servidor, ejecuta:
+Bash
+
+sudo docker pull educiber/pps:pr5
+sudo docker run -d --name servidor_nginx -p 80:80 -p 443:443 educiber/pps:pr5
+
+🧪 Pruebas de Verificación
+
+    Acceso PHP: https://localhost/index.php
+
+    Prueba de Seguridad (WAF): curl -I -k "https://localhost/index.php?exec=/bin/bash" (El servidor cortará la conexión o devolverá un 403 al detectar el intento de inyección de comandos).

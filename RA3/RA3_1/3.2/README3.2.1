@@ -1,0 +1,57 @@
+Práctica 3.2: Instalación de Certificado Digital en Apache
+
+Este proyecto consiste en la configuración y despliegue de un servidor web Apache2 securizado mediante el protocolo HTTPS, utilizando un certificado SSL/TLS auto-firmado y configurando la redirección automática del tráfico no seguro.
+📋 Requisitos de la Práctica
+
+    Instalación de Apache2 y OpenSSL.
+
+    Activación del módulo SSL (mod_ssl).
+
+    Generación de un par de claves y certificado X.509.
+
+    Configuración de un Virtual Host seguro en el puerto 443.
+
+    Redirección permanente del puerto 80 al 443.
+
+🛠️ Detalles Técnicos
+
+    Servidor: Apache/2.4 (Ubuntu).
+
+    Cifrado: RSA de 2048 bits.
+
+    Certificado: Auto-firmado (Válido por 365 días).
+
+    Ubicación del Certificado: /etc/apache2/ssl/apache.crt
+
+    Ubicación de la Clave: /etc/apache2/ssl/apache.key
+
+🔧 Configuración del Virtual Host
+
+El servidor está configurado para responder al nombre de dominio www.midominioseguro.com. La configuración incluye:
+
+    Redirección: Todo el tráfico entrante por el puerto 80 es redirigido mediante Redirect permanent hacia la versión cifrada.
+
+    Seguridad: Uso de la directiva SSLEngine on y rutas específicas para los ficheros de identidad.
+
+🚀 Cómo desplegar
+
+Para ejecutar este contenedor directamente desde Docker Hub:
+Bash
+
+# 1. Descargar y ejecutar el contenedor
+sudo docker run -d --name servidor_apache -p 80:80 -p 443:443 educiber/pps3.2.1:latest
+
+# 2. Configurar el host local (Solo si no está hecho)
+echo "127.0.0.1 www.midominioseguro.com" | sudo tee -a /etc/hosts
+
+🧪 Pruebas de Verificación
+
+    Acceder a http://www.midominioseguro.com y comprobar que el navegador cambia automáticamente a HTTPS.
+
+    Verificar los detalles del certificado en el navegador, donde aparecerán los datos:
+
+        L: Castellon
+
+        O: Caminas Web Projects
+
+        CN: www.midominioseguro.com
